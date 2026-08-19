@@ -1,0 +1,110 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { login } from '../api/auth';
+import { setToken } from '../api/authStorage';
+import { loginSchema } from '../schemas/auth';
+
+function Login() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(loginSchema),
+    });
+
+    const navigate = useNavigate();
+
+    const onSubmit = async (data) => {
+        try {
+            const response = await login(data);
+
+            setToken(response.token);
+
+            navigate('/dashboard');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+            <div className="w-full max-w-md rounded-xl bg-white p-8 shadow">
+                <h1 className="mb-2 text-2xl font-bold text-gray-900">
+                    Welcome back
+                </h1>
+
+                <p className="mb-6 text-sm text-gray-600">
+                    Don't have an account?{' '}
+                    <Link
+                        to="/register"
+                        className="font-medium text-blue-600 hover:text-blue-700"
+                    >
+                        Create one
+                    </Link>
+                </p>
+
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-y-5"
+                >
+                    <div>
+                        <label
+                            htmlFor="email"
+                            className="mb-1 block text-sm font-medium text-gray-700"
+                        >
+                            Email
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            autoComplete="email"
+                            {...register('email')}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-600">
+                                {errors.email.message}
+                            </p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="password"
+                            className="mb-1 block text-sm font-medium text-gray-700"
+                        >
+                            Password
+                        </label>
+
+                        <input
+                            id="password"
+                            type="password"
+                            autoComplete="current-password"
+                            {...register('password')}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.password && (
+                            <p className="mt-1 text-sm text-red-600">
+                                {errors.password.message}
+                            </p>
+                        )}
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-700"
+                    >
+                        Sign in
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export default Login;
