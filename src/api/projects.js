@@ -7,3 +7,9 @@ export const getProjects = async (params = {}) => {
 
     return response.data;
 };
+
+export const createProject = async (data) => {
+    const response = await apiClient.post('/projects', data);
+
+    return response.data;
+};

@@ -1,5 +1,6 @@
 import { useProjects } from '../hooks/useProjects';
 import ProjectList from '../components/projects/ProjectList';
+import ProjectForm from '../components/projects/ProjectForm';
 
 function Projects() {
     const {
@@ -39,6 +40,8 @@ function Projects() {
                         Manage your projects and tasks.
                     </p>
                 </div>
+
+                <ProjectForm />
 
                 <ProjectList projects={projects} />
             </div>
