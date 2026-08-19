@@ -10,7 +10,7 @@ function Login() {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(loginSchema),
     });
@@ -94,10 +94,12 @@ function Login() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-700"
+                        disabled={isSubmitting}
+                        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Sign in
+                        {isSubmitting ? 'Signing in...' : 'Sign in'}
                     </button>
+
                 </form>
             </div>
         </div>

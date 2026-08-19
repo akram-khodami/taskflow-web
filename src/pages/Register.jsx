@@ -10,7 +10,7 @@ function Register() {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(registerSchema),
     });
@@ -137,10 +137,12 @@ function Register() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-700"
+                        disabled={isSubmitting}
+                        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Create account
+                        {isSubmitting ? 'Creating account...' : 'Create account'}
                     </button>
+                    
                 </form>
             </div>
         </div>
