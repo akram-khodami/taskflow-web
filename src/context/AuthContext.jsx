@@ -1,7 +1,17 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { getCurrentUser } from '../api/auth';
-import { getToken } from '../api/authStorage';
+import {
+    getCurrentUser,
+    login as loginApi,
+    register as registerApi,
+    logout as logoutApi,
+} from '../api/auth';
+
+import {
+    getToken,
+    setToken,
+    removeToken,
+} from '../api/authStorage';
 
 const AuthContext = createContext(null);
 
@@ -22,6 +32,7 @@ export function AuthProvider({ children }) {
                 setUser(response.user);
             })
             .catch(() => {
+                removeToken();
                 setUser(null);
             })
             .finally(() => {
@@ -29,12 +40,41 @@ export function AuthProvider({ children }) {
             });
     }, []);
 
+    const login = async (data) => {
+        const response = await loginApi(data);
+
+        setToken(response.token);
+        setUser(response.user);
+
+        return response;
+    };
+
+    const register = async (data) => {
+        const response = await registerApi(data);
+
+        setToken(response.token);
+        setUser(response.user);
+
+        return response;
+    };
+
+    const logout = async () => {
+        try {
+            await logoutApi();
+        } finally {
+            removeToken();
+            setUser(null);
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
                 user,
-                setUser,
                 loading,
+                login,
+                register,
+                logout,
             }}
         >
             {children}

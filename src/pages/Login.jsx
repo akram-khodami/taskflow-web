@@ -1,33 +1,30 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { login } from '../api/auth';
-import { setToken } from '../api/authStorage';
+import { useAuth } from '../context/AuthContext';
 import { loginSchema } from '../schemas/auth';
+import { applyApiValidationErrors } from '../utils/apiError';
 
 function Login() {
     const {
         register,
         handleSubmit,
+        setError,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(loginSchema),
     });
 
     const navigate = useNavigate();
-
+    const { login: loginUser } = useAuth();
     const onSubmit = async (data) => {
         try {
-            const response = await login(data);
-
-            setToken(response.token);
-
+            await loginUser(data);
             navigate('/dashboard');
         } catch (error) {
-            console.error(error);
+            applyApiValidationErrors(error, setError);
         }
     };
-
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
             <div className="w-full max-w-md rounded-xl bg-white p-8 shadow">

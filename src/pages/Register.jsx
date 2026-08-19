@@ -1,20 +1,30 @@
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { useAuth } from '../context/AuthContext';
 import { registerSchema } from '../schemas/auth';
-import { Link } from 'react-router-dom';
+import { applyApiValidationErrors } from '../utils/apiError';
 
 function Register() {
     const {
         register,
         handleSubmit,
+        setError,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(registerSchema),
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const navigate = useNavigate();
+    const { register: registerUser } = useAuth();
+
+    const onSubmit = async (data) => {
+        try {
+            await registerUser(data);
+            navigate('/dashboard');
+        } catch (error) {
+            applyApiValidationErrors(error, setError);
+        }
     };
 
     return (
