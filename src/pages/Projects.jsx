@@ -1,4 +1,5 @@
 import { useProjects } from '../hooks/useProjects';
+import ProjectList from '../components/projects/ProjectList';
 
 function Projects() {
     const {
@@ -26,53 +27,20 @@ function Projects() {
 
     const projects = data?.data ?? [];
 
-    if (projects.length === 0) {
-        return (
-            <div className="p-8">
-                <h1 className="mb-4 text-2xl font-bold">
-                    Projects
-                </h1>
-
-                <p className="text-gray-600">
-                    No projects found.
-                </p>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="mx-auto max-w-6xl">
-                <h1 className="mb-6 text-3xl font-bold">
-                    Projects
-                </h1>
+                <div className="mb-6">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Projects
+                    </h1>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {projects.map((project) => (
-                        <div
-                            key={project.id}
-                            className="rounded-xl bg-white p-6 shadow"
-                        >
-                            <h2 className="text-xl font-semibold">
-                                {project.name}
-                            </h2>
-
-                            <p className="mt-2 text-gray-600">
-                                {project.description}
-                            </p>
-
-                            <div className="mt-4 flex gap-4 text-sm text-gray-500">
-                                <span>
-                                    Tasks: {project.tasks_count}
-                                </span>
-
-                                <span>
-                                    Members: {project.members_count}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
+                    <p className="mt-1 text-gray-600">
+                        Manage your projects and tasks.
+                    </p>
                 </div>
+
+                <ProjectList projects={projects} />
             </div>
         </div>
     );
