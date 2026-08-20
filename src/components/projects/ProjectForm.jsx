@@ -3,11 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { projectSchema } from '../../schemas/project';
 import { useCreateProject } from '../../hooks/useProjects';
+import { useUsers } from '../../hooks/useUsers';
+import { applyApiValidationErrors } from '../../utils/apiError';
 
 function ProjectForm({ onSuccess }) {
     const {
         register,
         handleSubmit,
+        setError,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(projectSchema),
@@ -24,13 +27,23 @@ function ProjectForm({ onSuccess }) {
         isError,
     } = useCreateProject();
 
+    const {
+        data: usersData,
+        isLoading: usersLoading,
+        isError: usersError,
+    } = useUsers({
+        exclude_admins: true,
+    });
+
+    const users = usersData?.data ?? [];
+
     const onSubmit = async (data) => {
         try {
             await createProject(data);
 
             onSuccess?.();
         } catch (error) {
-            console.error('Create project error:', error);
+            applyApiValidationErrors(error, setError);
         }
     };
 
@@ -81,6 +94,55 @@ function ProjectForm({ onSuccess }) {
                         {errors.description.message}
                     </p>
                 )}
+            </div>
+
+            <div>
+                <label
+                    htmlFor="members"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                    Members
+                </label>
+
+                {usersLoading && (
+                    <p className="text-sm text-gray-500">
+                        Loading users...
+                    </p>
+                )}
+
+                {usersError && (
+                    <p className="text-sm text-red-600">
+                        Failed to load users.
+                    </p>
+                )}
+
+                {!usersLoading && !usersError && (
+                    <select
+                        id="members"
+                        multiple
+                        {...register('members')}
+                        className="min-h-32 w-full rounded-lg border px-3 py-2"
+                    >
+                        {users.map((user) => (
+                            <option
+                                key={user.id}
+                                value={user.id}
+                            >
+                                {user.name} ({user.email})
+                            </option>
+                        ))}
+                    </select>
+                )}
+
+                {errors.members && (
+                    <p className="mt-1 text-sm text-red-600">
+                        {errors.members.message}
+                    </p>
+                )}
+
+                <p className="mt-1 text-xs text-gray-500">
+                    Hold Ctrl (Windows) or Command (Mac) to select multiple members.
+                </p>
             </div>
 
             {isError && (

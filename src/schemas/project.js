@@ -12,6 +12,7 @@ export const projectSchema = z.object({
         .optional(),
 
     members: z
-        .array(z.number())
-        .optional(),
+        .array(z.string())
+        .default([])
+        .transform((members) => members.map(Number)),
 });
