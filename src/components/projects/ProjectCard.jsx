@@ -1,4 +1,5 @@
 import { useDeleteProject } from '../../hooks/useProjects';
+import { Link } from 'react-router-dom';
 
 function ProjectCard({ project, onEdit }) {
     const {
@@ -45,6 +46,13 @@ function ProjectCard({ project, onEdit }) {
             </div>
 
             <div className="mt-5 flex gap-2">
+                <Link
+                    to={`/projects/${project.id}`}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                    View
+                </Link>
+
                 <button
                     type="button"
                     onClick={() => onEdit(project)}
