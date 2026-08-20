@@ -1,6 +1,6 @@
 import ProjectCard from './ProjectCard';
 
-function ProjectList({ projects }) {
+function ProjectList({ projects, onEdit }) {
     if (projects.length === 0) {
         return (
             <div className="rounded-xl bg-white p-8 text-center shadow">
@@ -17,6 +17,7 @@ function ProjectList({ projects }) {
                 <ProjectCard
                     key={project.id}
                     project={project}
+                    onEdit={onEdit}
                 />
             ))}
         </div>

@@ -1,15 +1,16 @@
 import { useProjects } from '../hooks/useProjects';
 import ProjectList from '../components/projects/ProjectList';
 import ProjectForm from '../components/projects/ProjectForm';
+import { useState } from 'react';
 
 function Projects() {
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-    } = useProjects();
 
+    //✅all Hooks must be called at the top level of the component, before any early returns or conditional logic. This is a rule of React Hooks to ensure that hooks are called in the same order on every render.
+    const { data, isLoading, isError, error } = useProjects();
+    const [showForm, setShowForm] = useState(false);
+    const [editingProject, setEditingProject] = useState(null);
+
+    //✅ Exit conditions after all hooks"
     if (isLoading) {
         return (
             <div className="p-8">
@@ -41,9 +42,38 @@ function Projects() {
                     </p>
                 </div>
 
-                <ProjectForm />
+                <button
+                    type="button"
+                    onClick={() => {
+                        setEditingProject(null);
+                        setShowForm(true);
+                    }}
+                    className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+                >
+                    + New Project
+                </button>
 
-                <ProjectList projects={projects} />
+                {showForm && (
+                    <div className="mb-8">
+                        <ProjectForm
+                            key={editingProject?.id || 'new'}
+                            project={editingProject}
+                            onSuccess={() => {
+                                setShowForm(false);
+                                setEditingProject(null);
+                            }}
+                        />
+                    </div>
+                )}
+
+                <ProjectList
+                    projects={projects}
+                    onEdit={(project) => {
+                        setEditingProject(project);
+                        setShowForm(true);
+                    }}
+                />
+
             </div>
         </div>
     );
