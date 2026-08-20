@@ -6,6 +6,7 @@ import {
 
 import {
     createProject,
+    deleteProject,
     getProject,
     getProjects,
     updateProject,
@@ -53,6 +54,20 @@ export function useUpdateProject() {
 
             queryClient.invalidateQueries({
                 queryKey: ['projects', variables.id],
+            });
+        },
+    });
+}
+
+export function useDeleteProject() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteProject,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['projects'],
             });
         },
     });
