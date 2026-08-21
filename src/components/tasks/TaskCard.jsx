@@ -1,6 +1,11 @@
-function TaskCard({ task }) {
+import { Link } from 'react-router-dom';
+
+function TaskCard({ task, projectId }) {
     return (
-        <article className="rounded-xl bg-white p-5 shadow">
+        <Link
+            to={`/projects/${projectId}/tasks/${task.id}`}
+            className="block rounded-xl bg-white p-5 shadow transition hover:shadow-md"
+        >
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -44,7 +49,7 @@ function TaskCard({ task }) {
                     Comments: {task.comments_count}
                 </span>
             </div>
-        </article>
+        </Link>
     );
 }
 

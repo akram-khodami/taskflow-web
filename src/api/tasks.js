@@ -11,6 +11,12 @@ export const getProjectTasks = async (projectId, params = {}) => {
     return response.data;
 };
 
+export const getTask = async (taskId) => {
+    const response = await apiClient.get(`/tasks/${taskId}`);
+
+    return response.data;
+};
+
 export const createTask = async ({ projectId, data }) => {
     const response = await apiClient.post(
         `/projects/${projectId}/tasks`,
@@ -19,3 +25,4 @@ export const createTask = async ({ projectId, data }) => {
 
     return response.data;
 };
+

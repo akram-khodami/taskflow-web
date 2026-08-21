@@ -159,7 +159,10 @@ function ProjectDetails() {
                     )}
 
                     {!tasksLoading && !tasksError && (
-                        <TaskList tasks={tasks} />
+                        <TaskList
+                            tasks={tasks}
+                            project={project}
+                        />
                     )}
                 </div>
 
