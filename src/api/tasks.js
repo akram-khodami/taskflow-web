@@ -10,3 +10,12 @@ export const getProjectTasks = async (projectId, params = {}) => {
 
     return response.data;
 };
+
+export const createTask = async ({ projectId, data }) => {
+    const response = await apiClient.post(
+        `/projects/${projectId}/tasks`,
+        data
+    );
+
+    return response.data;
+};

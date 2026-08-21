@@ -1,22 +1,29 @@
 import { Link, useParams } from 'react-router-dom';
 import { useProject } from '../hooks/useProjects';
-import TaskList from '../components/tasks/TaskList';
 import { useProjectTasks } from '../hooks/useTasks';
+import { useState } from 'react';
+import TaskList from '../components/tasks/TaskList';
+import TaskForm from '../components/tasks/TaskForm';
 
 function ProjectDetails() {
+
+    const [showTaskForm, setShowTaskForm] = useState(false);
+
     const { projectId } = useParams();
+
+    const numericProjectId = Number(projectId);
 
     const {
         data,
         isLoading,
         isError,
-    } = useProject(projectId);
+    } = useProject(numericProjectId);
 
     const {
         data: tasksData,
         isLoading: tasksLoading,
         isError: tasksError,
-    } = useProjectTasks(projectId);
+    } = useProjectTasks(numericProjectId);
 
 
     if (isLoading) {
@@ -111,6 +118,14 @@ function ProjectDetails() {
                                 Tasks belonging to this project.
                             </p>
                         </div>
+
+                        <button
+                            type="button"
+                            onClick={() => setShowTaskForm(true)}
+                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+                        >
+                            + New Task
+                        </button>
                     </div>
 
                     {tasksLoading && (
@@ -124,6 +139,22 @@ function ProjectDetails() {
                             <p className="text-red-600">
                                 Failed to load tasks.
                             </p>
+                        </div>
+                    )}
+
+
+                    {showTaskForm && (
+                        <div className="mb-6">
+                            <TaskForm
+                                project={project}
+                                projectId={numericProjectId}
+                                onSuccess={() => {
+                                    setShowTaskForm(false);
+                                }}
+                                onCancel={() => {
+                                    setShowTaskForm(false);
+                                }}
+                            />
                         </div>
                     )}
 
