@@ -1,6 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
 
 import { useTask } from '../hooks/useTasks';
+import CommentForm from '../components/comments/CommentForm';
+import CommentList from '../components/comments/CommentList';
 
 function TaskDetails() {
     const { taskId } = useParams();
@@ -113,6 +115,20 @@ function TaskDetails() {
                             {task.due_date_formatted ?? 'No due date'}
                         </p>
                     </div>
+                </div>
+            </div>
+
+            <div className="mt-8">
+                <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                    Comments
+                </h2>
+
+                <div className="space-y-6">
+                    <CommentForm taskId={task.id} />
+
+                    <CommentList
+                        comments={task.comments ?? []}
+                    />
                 </div>
             </div>
         </div>
