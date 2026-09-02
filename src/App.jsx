@@ -7,6 +7,7 @@ import TaskDetails from './pages/TaskDetails';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Projects from './pages/Projects';
 import ProjectDetails from './pages/ProjectDetails';
+import Users from './pages/Users';
 
 function App() {
     return (
@@ -15,6 +16,10 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route element={<ProtectedRoute />}>
+                    <Route
+                        path="/users"
+                        element={<Users />}
+                    />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/projects" element={<Projects />} />
                     <Route path="/projects/:projectId" element={<ProjectDetails />} />
