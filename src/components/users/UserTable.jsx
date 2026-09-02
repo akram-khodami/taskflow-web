@@ -1,13 +1,62 @@
-const UserTable = ({ users }) => {
+const UserTable = (
+    {
+        users,
+        sortBy,
+        sortOrder,
+        onSort,
+    }) => {
+
+    const getSortIcon = (column) => {
+        if (sortBy !== column) {
+            return '';
+        }
+
+        return sortOrder === 'asc' ? ' ↑' : ' ↓';
+    };
     return (
         <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full text-left text-sm text-gray-600">
                 <thead className="bg-gray-50 text-xs uppercase text-gray-700">
                     <tr>
-                        <th className="px-6 py-3">Name</th>
-                        <th className="px-6 py-3">Email</th>
-                        <th className="px-6 py-3">Role</th>
-                        <th className="px-6 py-3">Created At</th>
+                        <th className="px-6 py-3">
+                            <button
+                                type="button"
+                                onClick={() => onSort('name')}
+                                className="inline-flex items-center gap-1 font-medium transition hover:text-gray-900"
+                            >
+                                Name{getSortIcon('name')}
+                            </button>
+                        </th>
+
+                        <th className="px-6 py-3">
+                            <button
+                                type="button"
+                                onClick={() => onSort('email')}
+                                className="inline-flex items-center gap-1 font-medium transition hover:text-gray-900"
+                            >
+                                Email{getSortIcon('email')}
+                            </button>
+                        </th>
+
+                        <th className="px-6 py-3">
+                            <button
+                                type="button"
+                                onClick={() => onSort('role')}
+                                className="inline-flex items-center gap-1 font-medium transition hover:text-gray-900"
+                            >
+                                Role{getSortIcon('role')}
+                            </button>
+                        </th>
+
+                        <th className="px-6 py-3">
+                            <button
+                                type="button"
+                                onClick={() => onSort('created_at')}
+                                className="inline-flex items-center gap-1 font-medium transition hover:text-gray-900"
+                            >
+                                Created At{getSortIcon('created_at')}
+                            </button>
+                        </th>
                     </tr>
                 </thead>
 

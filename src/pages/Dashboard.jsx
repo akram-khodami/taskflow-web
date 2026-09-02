@@ -51,6 +51,13 @@ function Dashboard() {
                     >
                         Projects
                     </Link>
+
+                    <Link
+                        to="/users"
+                        className="inline-block rounded-lg bg-blue-600 px-5 py-3 font-medium text-white hover:bg-blue-700"
+                    >
+                        Users
+                    </Link>
                 </div>
             </div>
         </div>
