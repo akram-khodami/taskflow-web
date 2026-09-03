@@ -2,6 +2,7 @@ import {
     useMutation,
     useQuery,
     useQueryClient,
+    keepPreviousData,
 } from '@tanstack/react-query';
 
 import {
@@ -16,6 +17,7 @@ export function useProjects(params = {}) {
     return useQuery({
         queryKey: ['projects', params],
         queryFn: () => getProjects(params),
+        placeholderData: keepPreviousData,
     });
 }
 

@@ -1,4 +1,4 @@
-const UserPagination = ({
+const Pagination = ({
     currentPage,
     lastPage,
     onPageChange,
@@ -64,11 +64,10 @@ const UserPagination = ({
                         key={page}
                         type="button"
                         onClick={() => onPageChange(page)}
-                        className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${
-                            page === currentPage
-                                ? 'border-gray-900 bg-gray-900 text-white'
-                                : 'border-gray-300 bg-white hover:bg-gray-50'
-                        }`}
+                        className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${page === currentPage
+                            ? 'border-gray-900 bg-gray-900 text-white'
+                            : 'border-gray-300 bg-white hover:bg-gray-50'
+                            }`}
                     >
                         {page}
                     </button>
@@ -87,4 +86,4 @@ const UserPagination = ({
     );
 };
 
-export default UserPagination;
+export default Pagination;

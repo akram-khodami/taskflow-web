@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { getUsers } from '../api/users';
+import { useUsers } from '../hooks/useUsers';
 import UserTable from '../components/users/UserTable';
-import UserPagination from '../components/users/UserPagination';
+import Pagination from '../components/common/Pagination';
+import SearchInput from '../components/common/SearchInput';
+import PageHeader from '../components/common/PageHeader';
 
 const Users = () => {
 
@@ -32,23 +33,14 @@ const Users = () => {
         isFetching,
         isError,
         error,
-    } = useQuery({
-        queryKey: ['users', {
+    } = useUsers(
+        {
             search: debouncedSearch,
             role,
             page,
             sortBy,
             sortOrder,
-        }],
-        queryFn: () => getUsers({
-            search: debouncedSearch,
-            role,
-            page,
-            sort_by: sortBy,
-            sort_order: sortOrder,
-        }),
-        placeholderData: keepPreviousData,
-    });
+        });
 
     if (isLoading) {
         return <div className="p-6">Loading...</div>;
@@ -76,33 +68,18 @@ const Users = () => {
     return (
         <div className="p-6">
 
-            <div className="mb-6">
-                <div className="flex items-center gap-3">
-                    <h1 className="text-2xl font-semibold text-gray-900">
-                        Users
-                    </h1>
-
-                    {isFetching && (
-                        <span className="text-sm text-gray-500">
-                            Updating...
-                        </span>
-                    )}
-                </div>
-
-                <p className="mt-1 text-sm text-gray-500">
-                    Manage users and their roles.
-                </p>
-            </div>
+            <PageHeader
+                title="Users"
+                description="Manage users and their roles."
+                isUpdating={isFetching}
+            />
 
             <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-                <input
-                    type="text"
+                <SearchInput
                     value={search}
-                    onChange={(event) => setSearch(event.target.value)}
+                    onChange={setSearch}
                     placeholder="Search by name or email..."
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200 sm:max-w-md"
                 />
-
                 <select
                     value={role}
                     onChange={(event) => setRole(event.target.value)}
@@ -122,7 +99,7 @@ const Users = () => {
                 onSort={handleSort}
             />
 
-            <UserPagination
+            <Pagination
                 currentPage={data.meta.current_page}
                 lastPage={data.meta.last_page}
                 onPageChange={setPage}

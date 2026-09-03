@@ -1,14 +1,50 @@
+import { useEffect, useState } from 'react';
 import { useProjects } from '../hooks/useProjects';
 import ProjectList from '../components/projects/ProjectList';
 import ProjectForm from '../components/projects/ProjectForm';
-import { useState } from 'react';
+import Pagination from '../components/common/Pagination';
+import SearchInput from '../components/common/SearchInput';
+import PageHeader from '../components/common/PageHeader';
 
 function Projects() {
 
-    //✅all Hooks must be called at the top level of the component, before any early returns or conditional logic. This is a rule of React Hooks to ensure that hooks are called in the same order on every render.
-    const { data, isLoading, isError, error } = useProjects();
     const [showForm, setShowForm] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
+
+    const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [page, setPage] = useState(1);
+
+    const [sortBy, setSortBy] = useState('name');
+    const [sortOrder, setSortOrder] = useState('asc');
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [debouncedSearch]);
+
+    //✅all Hooks must be called at the top level of the component, before any early returns or conditional logic. This is a rule of React Hooks to ensure that hooks are called in the same order on every render.
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        error
+    } = useProjects(
+        {
+            search: debouncedSearch,
+            page,
+            sortBy,
+            sortOrder,
+        }
+    );
 
     //✅ Exit conditions after all hooks"
     if (isLoading) {
@@ -21,27 +57,33 @@ function Projects() {
 
     if (isError) {
         return (
-            <div className="p-8 text-red-600">
-                Failed to load projects.
+            <div className="p-6 text-red-600">
+                Error: {error.message}
             </div>
         );
     }
+
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(column);
+            setSortOrder('asc');
+        }
+
+        setPage(1);
+    };
 
     const projects = data?.data ?? [];
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="mx-auto max-w-6xl">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900">
-                        Projects
-                    </h1>
-
-                    <p className="mt-1 text-gray-600">
-                        Manage your projects and tasks.
-                    </p>
-                </div>
-
+                <PageHeader
+                    title="Projects"
+                    description="Manage your projects and tasks."
+                    isUpdating={isFetching}
+                />
                 <button
                     type="button"
                     onClick={() => {
@@ -66,12 +108,28 @@ function Projects() {
                     </div>
                 )}
 
+
+                <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+                    <SearchInput
+                        value={search}
+                        onChange={setSearch}
+                        placeholder="Search projects..."
+                    />
+                </div>
+
+
                 <ProjectList
                     projects={projects}
                     onEdit={(project) => {
                         setEditingProject(project);
                         setShowForm(true);
                     }}
+                />
+
+                <Pagination
+                    currentPage={data.meta.current_page}
+                    lastPage={data.meta.last_page}
+                    onPageChange={setPage}
                 />
 
             </div>
