@@ -5,6 +5,8 @@ import ProjectForm from '../components/projects/ProjectForm';
 import Pagination from '../components/common/Pagination';
 import SearchInput from '../components/common/SearchInput';
 import PageHeader from '../components/common/PageHeader';
+import LoadingState from '../components/common/LoadingState';
+import ErrorState from '../components/common/ErrorState';
 
 function Projects() {
 
@@ -48,19 +50,11 @@ function Projects() {
 
     //✅ Exit conditions after all hooks"
     if (isLoading) {
-        return (
-            <div className="p-8">
-                Loading projects...
-            </div>
-        );
+        return <LoadingState message="Loading projects..." />
     }
 
     if (isError) {
-        return (
-            <div className="p-6 text-red-600">
-                Error: {error.message}
-            </div>
-        );
+        return <ErrorState error="Failed to load Projects." />
     }
 
     const handleSort = (column) => {
@@ -79,21 +73,26 @@ function Projects() {
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="mx-auto max-w-6xl">
-                <PageHeader
-                    title="Projects"
-                    description="Manage your projects and tasks."
-                    isUpdating={isFetching}
-                />
-                <button
-                    type="button"
-                    onClick={() => {
-                        setEditingProject(null);
-                        setShowForm(true);
-                    }}
-                    className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6"
-                >
-                    + New Project
-                </button>
+
+                <div className="mt-8">
+                    <div className="mb-4 flex items-center justify-between">
+                        <PageHeader
+                            title="Projects"
+                            description="Manage your projects and tasks."
+                            isUpdating={isFetching}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingProject(null);
+                                setShowForm(true);
+                            }}
+                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6"
+                        >
+                            + New Project
+                        </button>
+                    </div>
+                </div>
 
                 {showForm && (
                     <div className="mb-8">
@@ -133,7 +132,7 @@ function Projects() {
                 />
 
             </div>
-        </div>
+        </div >
     );
 }
 

@@ -4,6 +4,11 @@ import { useProjectTasks } from '../hooks/useTasks';
 import { useState } from 'react';
 import TaskList from '../components/tasks/TaskList';
 import TaskForm from '../components/tasks/TaskForm';
+import LoadingState from '../components/common/LoadingState';
+import EmptyState from '../components/common/EmptyState';
+import ErrorState from '../components/common/ErrorState';
+import PageHeader from '../components/common/PageHeader';
+import BackButton from '../components/common/BackButton';
 
 function ProjectDetails() {
 
@@ -25,53 +30,26 @@ function ProjectDetails() {
         isError: tasksError,
     } = useProjectTasks(numericProjectId);
 
-
     if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gray-100 p-8">
-                Loading project...
-            </div>
-        );
+        return <LoadingState message="Loading project..." />
     }
 
     if (isError) {
-        return (
-            <div className="min-h-screen bg-gray-100 p-8">
-                <p className="text-red-600">
-                    Failed to load project.
-                </p>
-
-                <Link
-                    to="/projects"
-                    className="mt-4 inline-block text-blue-600"
-                >
-                    Back to projects
-                </Link>
-            </div>
-        );
+        return <ErrorState error="Failed to load the Project." />
     }
 
     const project = data?.data;
     const tasks = tasksData?.data ?? [];
 
     if (!project) {
-        return (
-            <div className="min-h-screen bg-gray-100 p-8">
-                <p>Project not found.</p>
-            </div>
-        );
+        return <EmptyState message='Project not found.' />
     }
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="mx-auto max-w-6xl">
 
-                <Link
-                    to="/projects"
-                    className="text-sm text-blue-600 hover:underline"
-                >
-                    ← Back to projects
-                </Link>
+                <BackButton to="/projects" label="Back to projects" />
 
                 <div className="mt-6 rounded-xl bg-white p-6 shadow">
                     <h1 className="text-3xl font-bold text-gray-900">
@@ -109,16 +87,11 @@ function ProjectDetails() {
 
                 <div className="mt-8">
                     <div className="mb-4 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-900">
-                                Tasks
-                            </h2>
+                        <PageHeader
+                            title="Tasks"
+                            description="Tasks belonging to this project."
 
-                            <p className="mt-1 text-sm text-gray-500">
-                                Tasks belonging to this project.
-                            </p>
-                        </div>
-
+                        />
                         <button
                             type="button"
                             onClick={() => setShowTaskForm(true)}
@@ -129,9 +102,7 @@ function ProjectDetails() {
                     </div>
 
                     {tasksLoading && (
-                        <div className="rounded-xl bg-white p-6 shadow">
-                            Loading tasks...
-                        </div>
+                        <LoadingState message="Loading tasks..." />
                     )}
 
                     {tasksError && (

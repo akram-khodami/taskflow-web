@@ -3,8 +3,13 @@ import { Link, useParams } from 'react-router-dom';
 import { useTask } from '../hooks/useTasks';
 import CommentForm from '../components/comments/CommentForm';
 import CommentList from '../components/comments/CommentList';
+import LoadingState from '../components/common/LoadingState';
+import ErrorState from '../components/common/ErrorState';
+import EmptyState from '../components/common/EmptyState';
+import BackButton from '../components/common/BackButton';
 
 function TaskDetails() {
+
     const { taskId } = useParams();
 
     const {
@@ -14,43 +19,26 @@ function TaskDetails() {
     } = useTask(taskId);
 
     if (isLoading) {
-        return (
-            <div className="p-8 text-center">
-                Loading task...
-            </div>
-        );
+        return <LoadingState message="Loading task..." />
     }
 
     if (isError) {
-        return (
-            <div className="p-8 text-center">
-                <p className="text-red-600">
-                    Failed to load task.
-                </p>
-            </div>
-        );
+        return <ErrorState error="Failed to load tasks." />
     }
 
     const task = data?.data;
 
     if (!task) {
-        return (
-            <div className="p-8 text-center">
-                Task not found.
-            </div>
-        );
+        return <EmptyState message='Task not found.' />
     }
 
     return (
         <div className="mx-auto max-w-4xl p-6">
-            <Link
-                to={`/projects/${task.project.id}`}
-                className="text-sm text-blue-600 hover:underline"
-            >
-                ← Back to project
-            </Link>
+
+            <BackButton to={`/projects/${task.project.id}`} label="Back to project" />
 
             <div className="mt-6 rounded-xl bg-white p-6 shadow">
+
                 <div className="flex items-start justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900">
