@@ -199,7 +199,7 @@ function ProjectForm({ project, onSuccess }) {
             <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
             >
                 {isPending
                     ? 'Saving...'

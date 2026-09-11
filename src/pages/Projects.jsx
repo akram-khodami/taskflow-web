@@ -38,7 +38,7 @@ function Projects() {
         isLoading,
         isFetching,
         isError,
-        error
+        error,
     } = useProjects(
         {
             search: debouncedSearch,
@@ -50,11 +50,11 @@ function Projects() {
 
     //✅ Exit conditions after all hooks"
     if (isLoading) {
-        return <LoadingState message="Loading projects..." />
+        return <LoadingState message="Loading task..." />
     }
 
     if (isError) {
-        return <ErrorState error="Failed to load Projects." />
+        return <ErrorState error={error.message} />
     }
 
     const handleSort = (column) => {
@@ -74,24 +74,22 @@ function Projects() {
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="mx-auto max-w-6xl">
 
-                <div className="mt-8">
-                    <div className="mb-4 flex items-center justify-between">
-                        <PageHeader
-                            title="Projects"
-                            description="Manage your projects and tasks."
-                            isUpdating={isFetching}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setEditingProject(null);
-                                setShowForm(true);
-                            }}
-                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6"
-                        >
-                            + New Project
-                        </button>
-                    </div>
+                <div className="mt-8 flex items-center justify-between">
+                    <PageHeader
+                        title="Projects"
+                        description="Manage your projects and tasks."
+                        isUpdating={isFetching}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setEditingProject(null);
+                            setShowForm(true);
+                        }}
+                        className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6 cursor-pointer"
+                    >
+                        + New Project
+                    </button>
                 </div>
 
                 {showForm && (

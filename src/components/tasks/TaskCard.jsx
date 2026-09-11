@@ -1,11 +1,37 @@
+import { useDeleteTask } from '../../hooks/useTasks';
 import { Link } from 'react-router-dom';
+import { ActionButtons } from '../common/ActionButtons';
 
-function TaskCard({ task, projectId }) {
+function TaskCard({ task, projectId, onEdit }) {
+
+    const {
+        mutateAsync: deleteTask,
+        isPending,
+    } = useDeleteTask();
+
+    const handleDelete = async () => {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete "${task.title}"?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await deleteTask(task.id);
+        } catch (error) {
+            console.error('Delete task error:', error);
+        }
+    };
+
     return (
-        <Link
+
+        <div className="block rounded-xl bg-white p-5 shadow transition hover:shadow-md">
+            {/* <Link
             to={`/projects/${projectId}/tasks/${task.id}`}
             className="block rounded-xl bg-white p-5 shadow transition hover:shadow-md"
-        >
+         > */}
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -48,8 +74,23 @@ function TaskCard({ task, projectId }) {
                 <span>
                     Comments: {task.comments_count}
                 </span>
+
+                <ActionButtons
+                    onEdit={() => onEdit(task)}
+                    onDelete={() => handleDelete()}
+                    isDeleting={isPending}
+                />
+
+                <Link
+                    to={`/projects/${projectId}/tasks/${task.id}`}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                    View
+                </Link>
+
             </div>
-        </Link>
+            {/* </Link> */}
+        </div >
     );
 }
 

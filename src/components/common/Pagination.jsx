@@ -46,7 +46,7 @@ const Pagination = ({
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => onPageChange(currentPage - 1)}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
                 Previous
             </button>
@@ -60,17 +60,17 @@ const Pagination = ({
                         ...
                     </span>
                 ) : (
-                    <button
-                        key={page}
-                        type="button"
-                        onClick={() => onPageChange(page)}
-                        className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${page === currentPage
-                            ? 'border-gray-900 bg-gray-900 text-white'
-                            : 'border-gray-300 bg-white hover:bg-gray-50'
-                            }`}
-                    >
-                        {page}
-                    </button>
+            <button
+                key={page}
+                type="button"
+                onClick={() => onPageChange(page)}
+                className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition cursor-pointer ${page === currentPage
+                    ? 'border-gray-900 bg-gray-900 text-white'
+                    : 'border-gray-300 bg-white hover:bg-gray-50'
+                    }`}
+            >
+                {page}
+            </button>
                 )
             )}
 
@@ -78,7 +78,7 @@ const Pagination = ({
                 type="button"
                 disabled={currentPage === lastPage}
                 onClick={() => onPageChange(currentPage + 1)}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
                 Next
             </button>

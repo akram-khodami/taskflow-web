@@ -65,7 +65,7 @@ function CommentForm({ taskId }) {
             <button
                 type="submit"
                 disabled={isPending}
-                className="mt-3 rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                className="mt-3 rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
             >
                 {isPending ? 'Adding...' : 'Add Comment'}
             </button>

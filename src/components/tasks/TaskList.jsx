@@ -1,6 +1,6 @@
 import TaskCard from './TaskCard';
 
-function TaskList({ tasks, project }) {
+function TaskList({ tasks, project, onEdit }) {
     if (tasks.length === 0) {
         return (
             <div className="rounded-xl bg-white p-8 text-center shadow">
@@ -18,6 +18,7 @@ function TaskList({ tasks, project }) {
                     key={task.id}
                     task={task}
                     projectId={project.id}
+                    onEdit={onEdit}
                 />
             ))}
         </div>

@@ -26,3 +26,15 @@ export const createTask = async ({ projectId, data }) => {
     return response.data;
 };
 
+export const updateTask = async ({ id, data }) => {
+    const response = await apiClient.put(`/tasks/${id}`, data);
+
+    return response.data;
+};
+
+export const deleteTask = async (id) => {
+    
+    const response = await apiClient.delete(`/tasks/${id}`);
+
+    return response.data;
+};
