@@ -55,8 +55,8 @@ function TaskForm({ project, task, onSuccess, onCancel }) {
             description: task.description ?? '',
             status: task.status ?? '',
             priority: task.priority ?? '',
-            due_date: task.due_date ?? '',
-            assignee_id: task.assignee_id ?? '',
+            due_date: task.due_date_formatted ?? '',
+            assignee_id: task.assignee?.id != null ? String(task.assignee.id) : '',
         });
     }, [taskData, reset]);
 
