@@ -1,4 +1,31 @@
-function CommentCard({ comment }) {
+import { ActionButtons } from '../common/ActionButtons';
+import { useDeleteComment } from '../../hooks/useComments';
+
+function CommentCard({ comment, taskId, onEdit }) {
+    const {
+        mutateAsync: deleteComment,
+        isPending,
+    } = useDeleteComment();
+
+    const handleDelete = async () => {
+        const confirmed = window.confirm(
+            'Are you sure you want to delete this comment?'
+        );
+        if (!confirmed) return;
+
+        try {
+            await deleteComment({
+                id: comment.id,
+                taskId: taskId ?? comment.task_id,
+            });
+        } catch (error) {
+            console.error('Delete comment error:', error);
+        }
+    };
+
+    const canEdit = comment.can_edit;
+    const canDelete = comment.can_delete;
+
     return (
         <article className="rounded-xl bg-white p-5 shadow">
             <div className="flex items-start justify-between">
@@ -13,22 +40,12 @@ function CommentCard({ comment }) {
                 </div>
 
                 <div className="flex gap-2">
-                    {comment.can_edit && (
-                        <button
-                            type="button"
-                            className="text-sm text-blue-600 hover:underline"
-                        >
-                            Edit
-                        </button>
-                    )}
-
-                    {comment.can_delete && (
-                        <button
-                            type="button"
-                            className="text-sm text-red-600 hover:underline"
-                        >
-                            Delete
-                        </button>
+                    {(canEdit || canDelete) && (
+                        <ActionButtons
+                            onEdit={canEdit ? () => onEdit(comment) : undefined}
+                            onDelete={canDelete ? handleDelete : undefined}
+                            isDeleting={isPending}
+                        />
                     )}
                 </div>
             </div>

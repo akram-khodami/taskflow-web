@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 import { useTask } from '../hooks/useTasks';
 import CommentForm from '../components/comments/CommentForm';
@@ -6,10 +7,11 @@ import CommentList from '../components/comments/CommentList';
 import LoadingState from '../components/common/LoadingState';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
-import BackButton from '../components/common/BackButton';
 import PageHeader from '../components/common/PageHeader';
 
 function TaskDetails() {
+    const [showForm, setShowForm] = useState(false);
+    const [editingRecord, setEditingRecord] = useState(null);
 
     const { taskId } = useParams();
 
@@ -21,19 +23,17 @@ function TaskDetails() {
         error,
     } = useTask(taskId);
 
-    if (isLoading) {
-        return <LoadingState message="Loading task..." />
-    }
-
-    if (isError) {
-        return <ErrorState error={error.message} />
-    }
+    if (isLoading) return <LoadingState message="Loading task..." />;
+    if (isError) return <ErrorState error={error.message} />;
 
     const task = data?.data;
 
-    if (!task) {
-        return <EmptyState message='Task not found.' />
-    }
+    if (!task) return <EmptyState message="Task not found." />;
+
+    const closeForm = () => {
+        setEditingRecord(null);
+        setShowForm(false);
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
@@ -45,7 +45,6 @@ function TaskDetails() {
                         description="Manage Task and their comments."
                         isUpdating={isFetching}
                     />
-                    {/* <BackButton to={`/projects/${task.project.id}`} label="Back to project" /> */}
                 </div>
 
                 <div className="mt-6 rounded-xl bg-white p-6 shadow">
@@ -118,15 +117,40 @@ function TaskDetails() {
                 </div>
 
                 <div className="mt-8">
-                    <h2 className="mb-4 text-2xl font-bold text-gray-900">
-                        Comments
-                    </h2>
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-2xl font-bold text-gray-900">Comments</h2>
+
+                        {!showForm && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditingRecord(null);
+                                    setShowForm(true);
+                                }}
+                                className="rounded-lg bg-blue-600 px-4 py-2 text-white"
+                            >
+                                Add Comment
+                            </button>
+                        )}
+                    </div>
 
                     <div className="space-y-6">
-                        <CommentForm taskId={task.id} />
+                        {showForm && (
+                            <CommentForm
+                                taskId={task.id}
+                                comment={editingRecord}
+                                onSuccess={closeForm}
+                                onCancel={closeForm}
+                            />
+                        )}
 
                         <CommentList
                             comments={task.comments ?? []}
+                            taskId={task.id}
+                            onEdit={(comment) => {
+                                setEditingRecord(comment);
+                                setShowForm(true);
+                            }}
                         />
                     </div>
                 </div>

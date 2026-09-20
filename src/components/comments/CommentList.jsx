@@ -1,12 +1,10 @@
 import CommentCard from './CommentCard';
 
-function CommentList({ comments }) {
+function CommentList({ comments, taskId, onEdit }) {
     if (!comments.length) {
         return (
             <div className="rounded-xl bg-white p-6 text-center shadow">
-                <p className="text-gray-500">
-                    No comments yet.
-                </p>
+                <p className="text-gray-500">No comments yet.</p>
             </div>
         );
     }
@@ -17,6 +15,8 @@ function CommentList({ comments }) {
                 <CommentCard
                     key={comment.id}
                     comment={comment}
+                    taskId={taskId}
+                    onEdit={onEdit}
                 />
             ))}
         </div>
