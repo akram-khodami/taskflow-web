@@ -19,7 +19,7 @@ function CommentCard({ comment, taskId, onEdit }) {
                 taskId: taskId ?? comment.task_id,
             });
         } catch (error) {
-            console.error('Delete comment error:', error);
+            console.error('Delete comment error:', error);//todo:handle better
         }
     };
 
@@ -42,7 +42,7 @@ function CommentCard({ comment, taskId, onEdit }) {
                 <div className="flex gap-2">
                     {(canEdit || canDelete) && (
                         <ActionButtons
-                            onEdit={canEdit ? () => onEdit(comment) : undefined}
+                            onEdit={canEdit && onEdit ? () => onEdit(comment) : undefined}
                             onDelete={canDelete ? handleDelete : undefined}
                             isDeleting={isPending}
                         />

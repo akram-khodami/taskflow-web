@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useState } from 'react';
 
 import { useTask } from '../hooks/useTasks';
@@ -8,6 +8,7 @@ import LoadingState from '../components/common/LoadingState';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 import PageHeader from '../components/common/PageHeader';
+import BackButton from '../components/common/BackButton';
 
 function TaskDetails() {
     const [showForm, setShowForm] = useState(false);
@@ -42,9 +43,12 @@ function TaskDetails() {
                 <div className="mt-8 flex items-center justify-between">
                     <PageHeader
                         title="Task"
-                        description="Manage Task and their comments."
+                        description="View the task details and manage its comments."
                         isUpdating={isFetching}
                     />
+
+                    <BackButton to={`/projects/${task.project.id}`} label="Back to project" />
+
                 </div>
 
                 <div className="mt-6 rounded-xl bg-white p-6 shadow">
@@ -56,7 +60,7 @@ function TaskDetails() {
                             </h1>
 
                             {task.description && (
-                                <p className="mt-3 text-gray-600">
+                                <p className="mt-3 whitespace-pre-line text-gray-600">
                                     {task.description}
                                 </p>
                             )}
@@ -94,7 +98,7 @@ function TaskDetails() {
                             </p>
 
                             <p className="font-medium">
-                                {task.creator?.name}
+                                {task.creator?.name ?? 'Unknown'}
                             </p>
                         </div>
 

@@ -13,12 +13,15 @@ import {
 } from '../api/tasks';
 
 export function useProjectTasks(projectId, params = {}) {
+    const id = Number(projectId);
+
     return useQuery({
-        queryKey: ['project-tasks', projectId, params],
-        queryFn: () => getProjectTasks(projectId, params),
+        queryKey: ['project-tasks', id, params],
+        queryFn: () => getProjectTasks(id, params),
         enabled: !!projectId,
     });
 }
+
 export function useTask(taskId) {
     return useQuery({
         queryKey: ['tasks', Number(taskId)],
@@ -50,7 +53,7 @@ export function useUpdateTask() {
         onSuccess: (updatedTask, variables) => {
             // update that task
             queryClient.invalidateQueries({
-                queryKey: ['tasks', variables.id],
+                queryKey: ['tasks', Number(variables.id)],
             });
 
             // update task list
@@ -70,9 +73,9 @@ export function useDeleteTask() {
     return useMutation({
         mutationFn: deleteTask,
 
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
-                queryKey: ['tasks'],
+                queryKey: ['tasks', Number(variables.id)],
             });
         },
     });

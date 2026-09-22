@@ -71,7 +71,7 @@ function CommentForm({ taskId, comment, onSuccess, onCancel }) {
             if (isEditMode) {
                 await updateComment({
                     id: comment.id,
-                    taskId,   
+                    taskId,
                     data: { body: data.body },
                 });
             } else {
@@ -96,7 +96,7 @@ function CommentForm({ taskId, comment, onSuccess, onCancel }) {
                 {...register('body')}
                 rows={4}
                 placeholder="Write your comment..."
-                className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
             {errors.body && (
                 <p className="mt-1 text-sm text-red-600">{errors.body.message}</p>
@@ -116,7 +116,7 @@ function CommentForm({ taskId, comment, onSuccess, onCancel }) {
                 >
                     {isPending
                         ? (isEditMode ? 'Updating...' : 'Adding...')
-                        : (isEditMode ? 'Edit Comment' : 'Add Comment')}
+                        : (isEditMode ? 'Update Comment' : 'Add Comment')}
                 </button>
                 {onCancel && (
                     <button type="button" onClick={onCancel} className="rounded-lg px-5 py-2.5">
