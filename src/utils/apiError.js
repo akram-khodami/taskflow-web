@@ -9,13 +9,22 @@ export function getApiValidationErrors(error) {
     return error.response?.data?.errors || {};
 }
 
-export function applyApiValidationErrors(error, setError) {
+export function applyApiErrors(error, setError) {
     const errors = getApiValidationErrors(error);
 
-    Object.entries(errors).forEach(([field, messages]) => {
-        setError(field, {
-            type: 'server',
-            message: messages[0],
+    if (Object.keys(errors).length > 0) {
+        Object.entries(errors).forEach(([field, messages]) => {
+            setError(field, {
+                type: 'server',
+                message: messages[0],
+            });
         });
+
+        return;
+    }
+
+    setError('root', {
+        type: 'server',
+        message: getApiErrorMessage(error),
     });
 }

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
 import { registerSchema } from '../schemas/auth';
-import { applyApiValidationErrors } from '../utils/apiError';
+import { applyApiErrors } from '../utils/apiError';
 
 function Register() {
     const {
@@ -23,7 +23,7 @@ function Register() {
             await registerUser(data);
             navigate('/dashboard');
         } catch (error) {
-            applyApiValidationErrors(error, setError);
+            applyApiErrors(error, setError);
         }
     };
 

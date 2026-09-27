@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
 import { loginSchema } from '../schemas/auth';
-import { applyApiValidationErrors } from '../utils/apiError';
+import { applyApiErrors } from '../utils/apiError';
 
 function Login() {
     const {
@@ -22,7 +22,7 @@ function Login() {
             await loginUser(data);
             navigate('/dashboard');
         } catch (error) {
-            applyApiValidationErrors(error, setError);
+            applyApiErrors(error, setError);
         }
     };
     return (
@@ -41,6 +41,13 @@ function Login() {
                         Create one
                     </Link>
                 </p>
+
+
+                {errors.root && (
+                    <p className="mt-1 text-sm text-red-600">
+                        {errors.root.message}
+                    </p>
+                )}
 
                 <form
                     onSubmit={handleSubmit(onSubmit)}

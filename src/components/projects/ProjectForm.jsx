@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { projectSchema } from '../../schemas/project';
 import { useProject, useCreateProject, useUpdateProject } from '../../hooks/useProjects';
 import { useUsers } from '../../hooks/useUsers';
-import { applyApiValidationErrors } from '../../utils/apiError';
+import { applyApiErrors } from '../../utils/apiError';
 
 function ProjectForm({ project, onSuccess }) {
     //✅all Hooks must be called at the top level of the component, before any early returns or conditional logic. This is a rule of React Hooks to ensure that hooks are called in the same order on every render.
@@ -88,7 +88,7 @@ function ProjectForm({ project, onSuccess }) {
 
             onSuccess?.();
         } catch (error) {
-            applyApiValidationErrors(error, setError);
+            applyApiErrors(error, setError);
         }
     };
 

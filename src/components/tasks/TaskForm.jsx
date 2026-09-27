@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { taskSchema } from '../../schemas/task';
 import { useCreateTask, useUpdateTask, useTask } from '../../hooks/useTasks';
-import { applyApiValidationErrors } from '../../utils/apiError';
+import { applyApiErrors } from '../../utils/apiError';
 
 function TaskForm({ project, task, onSuccess, onCancel }) {
 
@@ -101,7 +101,7 @@ function TaskForm({ project, task, onSuccess, onCancel }) {
 
             onSuccess?.();
         } catch (error) {
-            applyApiValidationErrors(error, setError);
+            applyApiErrors(error, setError);
         }
     };
 

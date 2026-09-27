@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { commentSchema } from '../../schemas/comment';
 import { useCreateComment, useComment, useUpdateComment } from '../../hooks/useComments';
-import { applyApiValidationErrors } from '../../utils/apiError';
+import { applyApiErrors } from '../../utils/apiError';
 
 function CommentForm({ taskId, comment, onSuccess, onCancel }) {
     const isEditMode = Boolean(comment?.id);
@@ -82,7 +82,7 @@ function CommentForm({ taskId, comment, onSuccess, onCancel }) {
             }
             onSuccess?.();
         } catch (error) {
-            applyApiValidationErrors(error, setError);
+            applyApiErrors(error, setError);
         }
     };
 
