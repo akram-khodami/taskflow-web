@@ -7,6 +7,7 @@ import SearchInput from '../components/common/SearchInput';
 import PageHeader from '../components/common/PageHeader';
 import LoadingState from '../components/common/LoadingState';
 import ErrorState from '../components/common/ErrorState';
+import PageNavbar from '../components/common/PageNavbar';
 
 function Projects() {
 
@@ -71,65 +72,70 @@ function Projects() {
     const projects = data?.data ?? [];
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
-            <div className="mx-auto max-w-6xl">
 
-                <div className="mt-8 flex items-center justify-between">
-                    <PageHeader
-                        title="Projects"
-                        description="Manage your projects and tasks."
-                        isUpdating={isFetching}
-                    />
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setEditingProject(null);
-                            setShowForm(true);
-                        }}
-                        className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6 cursor-pointer"
-                    >
-                        + New Project
-                    </button>
-                </div>
+        <div className="min-h-screen bg-gray-50">
+            <PageNavbar pageName="Projects" />
+            <div className="min-h-screen bg-gray-100 p-8">
+                <div className="mx-auto max-w-6xl">
 
-                {showForm && (
-                    <div className="mb-8">
-                        <ProjectForm
-                            key={editingProject?.id || 'new'}
-                            project={editingProject}
-                            onSuccess={() => {
-                                setShowForm(false);
+
+                    <div className="mt-8 flex items-center justify-between">
+                        <PageHeader
+                            title="Projects"
+                            description="Manage your projects and tasks."
+                            isUpdating={isFetching}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
                                 setEditingProject(null);
+                                setShowForm(true);
                             }}
+                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6 cursor-pointer"
+                        >
+                            + New Project
+                        </button>
+                    </div>
+
+                    {showForm && (
+                        <div className="mb-8">
+                            <ProjectForm
+                                key={editingProject?.id || 'new'}
+                                project={editingProject}
+                                onSuccess={() => {
+                                    setShowForm(false);
+                                    setEditingProject(null);
+                                }}
+                            />
+                        </div>
+                    )}
+
+
+                    <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+                        <SearchInput
+                            value={search}
+                            onChange={setSearch}
+                            placeholder="Search projects..."
                         />
                     </div>
-                )}
 
 
-                <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-                    <SearchInput
-                        value={search}
-                        onChange={setSearch}
-                        placeholder="Search projects..."
+                    <ProjectList
+                        projects={projects}
+                        onEdit={(project) => {
+                            setEditingProject(project);
+                            setShowForm(true);
+                        }}
                     />
+
+                    <Pagination
+                        currentPage={data.meta.current_page}
+                        lastPage={data.meta.last_page}
+                        onPageChange={setPage}
+                    />
+
                 </div>
-
-
-                <ProjectList
-                    projects={projects}
-                    onEdit={(project) => {
-                        setEditingProject(project);
-                        setShowForm(true);
-                    }}
-                />
-
-                <Pagination
-                    currentPage={data.meta.current_page}
-                    lastPage={data.meta.last_page}
-                    onPageChange={setPage}
-                />
-
-            </div>
+            </div >
         </div >
     );
 }

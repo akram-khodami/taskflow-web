@@ -1,49 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PageNavbar from '../components/common/PageNavbar';
 
 function Dashboard() {
     const { user, loading, logout } = useAuth();
-    const navigate = useNavigate();
-
-    if (loading) {
-        return (
-            <div className="flex min-h-screen items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-                    <p className="text-sm text-gray-500">Loading...</p>
-                </div>
-            </div>
-        );
-    }
-
-    const handleLogout = async () => {
-        await logout();
-        navigate('/login');
-    };
 
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <header className="border-b bg-white">
-                <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-                    <div>
-                        <h1 className="text-xl font-bold text-gray-900">
-                            TaskFlow
-                        </h1>
-                        <p className="text-sm text-gray-500">
-                            Project management made simple
-                        </p>
-                    </div>
-
-                    <button
-                        onClick={handleLogout}
-                        className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-                    >
-                        Logout
-                    </button>
-                </div>
-            </header>
-
+            <PageNavbar />
             <main className="mx-auto max-w-6xl px-6 py-10">
                 {/* Welcome */}
                 <section className="rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white shadow-lg">

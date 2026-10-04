@@ -7,6 +7,7 @@ import PageHeader from '../components/common/PageHeader';
 import LoadingState from '../components/common/LoadingState';
 import ErrorState from '../components/common/ErrorState';
 import BackButton from '../components/common/BackButton';
+import PageNavbar from '../components/common/PageNavbar';
 
 const Users = () => {
 
@@ -65,7 +66,9 @@ const Users = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
+        <div className="min-h-screen bg-gray-50">
+            <PageNavbar pageName="Users" />
+
             <div className="mx-auto max-w-6xl">
 
                 <div className="mt-8 flex items-center justify-between">

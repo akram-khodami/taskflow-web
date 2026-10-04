@@ -9,6 +9,7 @@ import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 import PageHeader from '../components/common/PageHeader';
 import BackButton from '../components/common/BackButton';
+import PageNavbar from '../components/common/PageNavbar';
 
 function TaskDetails() {
     const [showForm, setShowForm] = useState(false);
@@ -37,7 +38,9 @@ function TaskDetails() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
+        <div className="min-h-screen bg-gray-50">
+            <PageNavbar pageName="Task" />
+
             <div className="mx-auto max-w-6xl">
 
                 <div className="mt-8 flex items-center justify-between">
