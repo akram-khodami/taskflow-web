@@ -28,10 +28,8 @@ function TaskCard({ task, projectId, onEdit }) {
     return (
 
         <div className="block rounded-xl bg-white p-5 shadow transition hover:shadow-md">
-            {/* <Link
-            to={`/projects/${projectId}/tasks/${task.id}`}
-            className="block rounded-xl bg-white p-5 shadow transition hover:shadow-md"
-         > */}
+
+
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -49,6 +47,7 @@ function TaskCard({ task, projectId, onEdit }) {
                     {task.status_label}
                 </span>
             </div>
+
 
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
                 <span>
@@ -75,21 +74,24 @@ function TaskCard({ task, projectId, onEdit }) {
                     Comments: {task.comments_count}
                 </span>
 
-                <ActionButtons
-                    onEdit={() => onEdit(task)}
-                    onDelete={() => handleDelete()}
-                    isDeleting={isPending}
-                />
-
-                <Link
-                    to={`/projects/${projectId}/tasks/${task.id}`}
-                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                >
-                    View
-                </Link>
-
             </div>
-            {/* </Link> */}
+
+            <div className="flex items-center justify-between p-5">
+                <div className="flex items-center gap-2">
+                    <ActionButtons
+                        onEdit={() => onEdit(task)}
+                        onDelete={() => handleDelete()}
+                        isDeleting={isPending}
+                    />
+                    <Link
+                        to={`/projects/${projectId}/tasks/${task.id}`}
+                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                    >
+                        View
+                    </Link>
+                </div>
+            </div>
+
         </div >
     );
 }

@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PageNavbar from '../components/common/PageNavbar';
+import { useDashboard } from '../hooks/useDashboard';
 
 function Dashboard() {
-    const { user, loading, logout } = useAuth();
+    const { user } = useAuth();
+    const {
+        data: dashboard,
+        isLoading,
+        isError,
+    } = useDashboard();
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -131,7 +137,7 @@ function Dashboard() {
                                 Projects
                             </p>
                             <p className="mt-2 text-2xl font-bold text-gray-900">
-                                —
+                                {isLoading ? '...' : dashboard?.projects_count ?? 0}
                             </p>
                         </div>
 
@@ -140,7 +146,7 @@ function Dashboard() {
                                 Tasks
                             </p>
                             <p className="mt-2 text-2xl font-bold text-gray-900">
-                                —
+                                {isLoading ? '...' : dashboard?.tasks_count ?? 0}
                             </p>
                         </div>
 
@@ -149,7 +155,7 @@ function Dashboard() {
                                 Team Members
                             </p>
                             <p className="mt-2 text-2xl font-bold text-gray-900">
-                                —
+                                {isLoading ? '...' : dashboard?.users_count ?? 0}
                             </p>
                         </div>
                     </div>

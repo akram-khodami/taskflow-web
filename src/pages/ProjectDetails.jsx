@@ -11,10 +11,13 @@ import PageHeader from '../components/common/PageHeader';
 import BackButton from '../components/common/BackButton';
 import Pagination from '../components/common/Pagination';
 import SearchInput from '../components/common/SearchInput';
+import SortSelect from '../components/common/SortSelect';
+import PageNavbar from '../components/common/PageNavbar';
 
 function ProjectDetails() {
     const [showForm, setShowForm] = useState(false);
     const [editingRecord, setEditingRecord] = useState(null);
+    const [formKey, setFormKey] = useState(0);
 
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -26,21 +29,31 @@ function ProjectDetails() {
     const { projectId } = useParams();
 
     const numericProjectId = Number(projectId);
-    const isValidProjectId = !Number.isNaN(numericProjectId) && numericProjectId > 0;
+    const isValidProjectId =
+        Number.isInteger(numericProjectId) && numericProjectId > 0;
 
-    // Debounce search input
+    const TASK_SORT_OPTIONS = [
+        { value: 'title', label: 'Title' },
+        { value: 'created_at', label: 'Created At' },
+        { value: 'updated_at', label: 'Updated At' },
+        { value: 'due_date', label: 'Due Date' },
+        { value: 'status', label: 'Status' },
+    ];
+
+    // Debounce search + reset page
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(search);
-        }, 500);
+            setPage(1);
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, [search]);
 
-    // Reset page when search changes
+    // Reset page when sort changes
     useEffect(() => {
         setPage(1);
-    }, [debouncedSearch]);
+    }, [debouncedSearch, sortBy, sortOrder]);
 
     const {
         data,
@@ -56,45 +69,64 @@ function ProjectDetails() {
         isLoading: tasksLoading,
         isError: tasksError,
         isFetching: isTasksFetching,
-    } = useProjectTasks(numericProjectId, {
-        search: debouncedSearch,
-        page,
-        sortBy,
-        sortOrder,
-    }, {
-        enabled: isValidProjectId,
-    });
+    } = useProjectTasks(
+        numericProjectId,
+        {
+            search: debouncedSearch,
+            page,
+            sortBy,
+            sortOrder,
+        },
+        {
+            enabled: isValidProjectId,
+            keepPreviousData: true,
+        }
+    );
 
-    // Handle invalid project ID
-    if (!isValidProjectId) {
-        return (
-            <div className="min-h-screen bg-gray-100 p-8">
-                <div className="mx-auto max-w-6xl">
-                    <BackButton to="/projects" label="Back to projects" />
-                    <div className="mt-6">
-                        <EmptyState message="Invalid project ID." />
-                    </div>
-                </div>
+    // --- Handlers ---
+    const openNewForm = () => {
+        setEditingRecord(null);
+        setFormKey((k) => k + 1);
+        setShowForm(true);
+    };
+
+    const openEditForm = (task) => {
+        setEditingRecord(task);
+        setFormKey((k) => k + 1);
+        setShowForm(true);
+    };
+
+    const closeForm = () => {
+        setShowForm(false);
+        setEditingRecord(null);
+    };
+
+    // --- Render helpers ---
+    const renderPageShell = (content) => (
+        <div className="min-h-screen bg-gray-100 p-8">
+            <div className="mx-auto max-w-6xl">
+                <BackButton to="/projects" label="Back to projects" />
+                <div className="mt-6">{content}</div>
             </div>
+        </div>
+    );
+
+    // --- Invalid project ID ---
+    if (!isValidProjectId) {
+        return renderPageShell(
+            <EmptyState message="Invalid project ID." />
         );
     }
 
-    // Initial loading for project
+    // --- Initial loading for project ---
     if (isLoading) {
         return <LoadingState message="Loading project..." />;
     }
 
-    // Project error
+    // --- Project error ---
     if (isError) {
-        return (
-            <div className="min-h-screen bg-gray-100 p-8">
-                <div className="mx-auto max-w-6xl">
-                    <BackButton to="/projects" label="Back to projects" />
-                    <div className="mt-6">
-                        <ErrorState error="Failed to load the Project." />
-                    </div>
-                </div>
-            </div>
+        return renderPageShell(
+            <ErrorState error="Failed to load the Project." />
         );
     }
 
@@ -102,26 +134,20 @@ function ProjectDetails() {
     const tasks = tasksData?.data ?? [];
 
     if (!project) {
-        return (
-            <div className="min-h-screen bg-gray-100 p-8">
-                <div className="mx-auto max-w-6xl">
-                    <BackButton to="/projects" label="Back to projects" />
-                    <div className="mt-6">
-                        <EmptyState message="Project not found." />
-                    </div>
-                </div>
-            </div>
+        return renderPageShell(
+            <EmptyState message="Project not found." />
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
+        <div className="min-h-screen bg-gray-50">
+            <PageNavbar pageName="Project" />
             <div className="mx-auto max-w-6xl">
 
                 <div className="mt-8 flex items-center justify-between">
                     <PageHeader
-                        title="Project"
-                        description="Manage Project and their Tasks."
+                        title={project.name}
+                        description="Manage this project and its tasks."
                         isUpdating={isFetching}
                     />
                     <BackButton to="/projects" label="Back to projects" />
@@ -143,14 +169,14 @@ function ProjectDetails() {
                         <div>
                             <p className="text-sm text-gray-500">Owner</p>
                             <p className="font-medium">
-                                {project.owner?.name}
+                                {project.owner?.name ?? '—'}
                             </p>
                         </div>
 
                         <div>
                             <p className="text-sm text-gray-500">Members</p>
                             <p className="font-medium">
-                                {project.members_count}
+                                {project.members_count ?? 0}
                             </p>
                         </div>
                     </div>
@@ -166,11 +192,8 @@ function ProjectDetails() {
                         />
                         <button
                             type="button"
-                            onClick={() => {
-                                setEditingRecord(null);
-                                setShowForm(true);
-                            }}
-                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 mb-6 cursor-pointer"
+                            onClick={openNewForm}
+                            className="mb-6 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
                         >
                             + New Task
                         </button>
@@ -180,18 +203,12 @@ function ProjectDetails() {
                     {showForm && (
                         <div className="mb-6">
                             <TaskForm
-                                key={editingRecord?.id || 'new'}
+                                key={formKey}
                                 task={editingRecord}
                                 project={project}
                                 projectId={numericProjectId}
-                                onSuccess={() => {
-                                    setShowForm(false);
-                                    setEditingRecord(null);
-                                }}
-                                onCancel={() => {
-                                    setShowForm(false);
-                                    setEditingRecord(null);
-                                }}
+                                onSuccess={closeForm}
+                                onCancel={closeForm}
                             />
                         </div>
                     )}
@@ -201,19 +218,31 @@ function ProjectDetails() {
                         <ErrorState error="Failed to load the Project Tasks." />
                     )}
 
-                    {/* Tasks Loading */}
+                    {/* Tasks Loading (initial only) */}
                     {tasksLoading && !tasksError && (
                         <LoadingState message="Loading tasks..." />
                     )}
 
                     {/* Tasks List */}
+                    {/* Tasks List */}
                     {!tasksLoading && !tasksError && (
                         <div>
-                            <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-                                <SearchInput
-                                    value={search}
-                                    onChange={setSearch}
-                                    placeholder="Search tasks..."
+                            {/* Filters Row */}
+                            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex-1">
+                                    <SearchInput
+                                        value={search}
+                                        onChange={setSearch}
+                                        placeholder="Search tasks..."
+                                    />
+                                </div>
+
+                                <SortSelect
+                                    sortBy={sortBy}
+                                    sortOrder={sortOrder}
+                                    onSortByChange={setSortBy}
+                                    onSortOrderChange={setSortOrder}
+                                    options={TASK_SORT_OPTIONS}
                                 />
                             </div>
 
@@ -224,14 +253,11 @@ function ProjectDetails() {
                                     <TaskList
                                         tasks={tasks}
                                         project={project}
-                                        onEdit={(task) => {
-                                            setEditingRecord(task);
-                                            setShowForm(true);
-                                        }}
+                                        onEdit={openEditForm}
                                     />
                                     <Pagination
-                                        currentPage={tasksData?.meta.current_page}
-                                        lastPage={tasksData?.meta.last_page}
+                                        currentPage={tasksData?.meta?.current_page ?? 1}
+                                        lastPage={tasksData?.meta?.last_page ?? 1}
                                         onPageChange={setPage}
                                     />
                                 </>
